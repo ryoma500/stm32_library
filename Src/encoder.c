@@ -1,4 +1,4 @@
-#include "../Inc/encoder.h"
+#include "encoder.h"
 
 
 /*
@@ -13,43 +13,13 @@ void Encoder_Init(Encoder_HandleTypeDef *encoder,
         return;
     }
 
-    /*
-     * 使用するTIMを保存
-     */
-    encoder->htim = htim;
-
-    /*
-     * TIMカウンタの周期を自動取得
-     *
-     * 例:
-     * Period = 65535
-     * → counter_period = 65536
-     */
-    encoder->counter_period =
-        (uint32_t)htim->Init.Period + 1U;
-
-    /*
-     * 1回転あたりのカウント数
-     */
-    encoder->counts_per_rev = counts_per_rev;
-
-    /*
-     * 現在のTIM CNTを取得し、
-     * 次回のEncoder_Update()の比較基準にする。
-     */
-    encoder->last_counter =
-        (uint16_t)__HAL_TIM_GET_COUNTER(htim);
-
-    /*
-     * ソフトウェア位置を初期化
-     */
-    encoder->position = 0;
-
-    /*
-     * Z相関連を初期化
-     */
-    encoder->index_position = 0;
-    encoder->index_detected = 0U;
+    encoder->htim = htim; // 使用するTIMを保存
+    encoder->counter_period = (uint32_t)htim->Init.Period + 1U; // TIMカウンタの周期を取得
+    encoder->counts_per_rev = counts_per_rev; // 1回転あたりのカウント数
+    encoder->last_counter = (uint16_t)__HAL_TIM_GET_COUNTER(htim); // 現在のTIM CNTを取得し、次回のEncoder_Update()の比較基準にする。
+    encoder->position = 0; // ソフトウェア位置を初期化
+    encoder->index_position = 0; // Z相の位置を初期化
+    encoder->index_detected = 0U; // Z相の発見を初期化
 }
 
 
@@ -72,11 +42,7 @@ void Encoder_Update(Encoder_HandleTypeDef *encoder)
         return;
     }
 
-    /*
-     * 現在のTIM CNTを取得
-     */
-    current_counter =
-        (uint16_t)__HAL_TIM_GET_COUNTER(encoder->htim);
+    current_counter = (uint16_t)__HAL_TIM_GET_COUNTER(encoder->htim); // 現在のTIM CNTを取得
 
     /*
      * 前回のCNTから今回のCNTまでの差分を計算する。
@@ -119,15 +85,8 @@ void Encoder_Update(Encoder_HandleTypeDef *encoder)
         diff = (int32_t)raw_diff;
     }
 
-    /*
-     * 次回の比較用に現在値を保存
-     */
-    encoder->last_counter = current_counter;
-
-    /*
-     * 累積位置を更新
-     */
-    encoder->position += diff;
+    encoder->last_counter = current_counter; // 次回の比較用に現在値を保存
+    encoder->position += diff; // 累積位置を更新
 }
 
 
@@ -214,8 +173,6 @@ int32_t Encoder_GetPosition(Encoder_HandleTypeDef *encoder)
 /*
  * 現在の回転数を取得する
  *
- * Z相を回転数の基準にはしない。
- *
  * position / counts_per_rev
  * で計算する。
  */
@@ -252,8 +209,6 @@ int32_t Encoder_GetIndexPosition(Encoder_HandleTypeDef *encoder)
 
 /*
  * 最初のZ相位置を基準とした現在位置を取得する
- *
- * position - index_position
  */
 int32_t Encoder_GetPositionFromIndex(
     Encoder_HandleTypeDef *encoder)
@@ -286,8 +241,6 @@ uint8_t Encoder_IsIndexDetected(
 /*
  * エンコーダ位置をソフトウェア上でリセットする
  *
- * TIMのCNTは変更しない。
- *
  * 次回のZ相が新しい絶対基準になる。
  */
 void Encoder_ResetPosition(
@@ -298,18 +251,7 @@ void Encoder_ResetPosition(
         return;
     }
 
-    /*
-     * 現在位置をリセット
-     */
-    encoder->position = 0;
-
-    /*
-     * Z相基準をリセット
-     */
-    encoder->index_position = 0;
-
-    /*
-     * 次回のZ相を初回Z相として扱う
-     */
-    encoder->index_detected = 0U;
+    encoder->position = 0; // 現在位置をリセット
+    encoder->index_position = 0; // Z相基準をリセット
+    encoder->index_detected = 0U; // 次回のZ相を初回Z相として扱う
 }

@@ -125,11 +125,6 @@ int32_t Encoder_GetPosition(Encoder_HandleTypeDef *encoder);
 
 /*
  * 現在の回転数を取得する
- *
- * Z相を回転数の基準にはしない。
- *
- * position / counts_per_rev
- * で計算する。
  */
 int32_t Encoder_GetRevolution(Encoder_HandleTypeDef *encoder);
 
@@ -165,19 +160,6 @@ uint8_t Encoder_IsIndexDetected(
 
 /*
  * エンコーダ位置をソフトウェア上でリセットする。
- *
- * position:
- *     0にする。
- *
- * index_position:
- *     0にする。
- *
- * index_detected:
- *     0にする。
- *
- * 次回のZ相が新しい絶対基準になる。
- *
- * TIMのCNTは変更しない。
  */
 void Encoder_ResetPosition(
     Encoder_HandleTypeDef *encoder);
