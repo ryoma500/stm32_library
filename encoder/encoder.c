@@ -52,33 +52,21 @@ void Encoder_Update(Encoder_HandleTypeDef *encoder)
      */
     if (current_counter >= encoder->last_counter)
     {
-        raw_diff =
-            (uint32_t)current_counter -
-            (uint32_t)encoder->last_counter;
+        raw_diff = (uint32_t)current_counter - (uint32_t)encoder->last_counter;
     }
     else
     {
-        /*
-         * CNTが0をまたいだ場合
-         */
-        raw_diff =
-            encoder->counter_period -
-            (uint32_t)encoder->last_counter +
-            (uint32_t)current_counter;
+        /* CNTが0をまたいだ場合 */
+        raw_diff = encoder->counter_period - (uint32_t)encoder->last_counter + (uint32_t)current_counter;
     }
 
     /*
      * カウンタ周期の半分以上の差分は、
      * 逆方向に移動したものとして扱う。
-     *
-     * 前回Encoder_Update()から今回までの移動量が
-     * カウンタ周期の半分未満であることを前提とする。
      */
     if (raw_diff >= (encoder->counter_period / 2U))
     {
-        diff =
-            (int32_t)raw_diff -
-            (int32_t)encoder->counter_period;
+        diff = (int32_t)raw_diff - (int32_t)encoder->counter_period;
     }
     else
     {
@@ -119,21 +107,15 @@ void Encoder_Z_Callback(Encoder_HandleTypeDef *encoder)
     }
 
     /* 基準位置からの距離 */
-    distance_from_index =
-        encoder->position - encoder->index_position;
+    distance_from_index = encoder->position - encoder->index_position;
 
-    half_counts =
-        (int32_t)(encoder->counts_per_rev / 2U);
+    half_counts = (int32_t)(encoder->counts_per_rev / 2U);
 
     /* 基準から何回転分進んだかを計算 */
-    revolution_from_index =
-        distance_from_index /
-        (int32_t)encoder->counts_per_rev;
+    revolution_from_index = distance_from_index / (int32_t)encoder->counts_per_rev;
 
     /* 割り切れなかった端数 */
-    remainder =
-        distance_from_index %
-        (int32_t)encoder->counts_per_rev;
+    remainder = distance_from_index % (int32_t)encoder->counts_per_rev;
 
     /*
      * 端数が半周以上なら、
@@ -149,10 +131,7 @@ void Encoder_Z_Callback(Encoder_HandleTypeDef *encoder)
     }
 
     /* 該当する回転位置へ補正 */
-    encoder->position =
-        encoder->index_position +
-        revolution_from_index *
-        (int32_t)encoder->counts_per_rev;
+    encoder->position = encoder->index_position + revolution_from_index * (int32_t)encoder->counts_per_rev;
 }
 
 
@@ -188,8 +167,7 @@ int32_t Encoder_GetRevolution(Encoder_HandleTypeDef *encoder)
         return 0;
     }
 
-    return encoder->position /
-           (int32_t)encoder->counts_per_rev;
+    return encoder->position / (int32_t)encoder->counts_per_rev;
 }
 
 
@@ -218,8 +196,7 @@ int32_t Encoder_GetPositionFromIndex(
         return 0;
     }
 
-    return encoder->position -
-           encoder->index_position;
+    return encoder->position - encoder->index_position;
 }
 
 
@@ -240,8 +217,6 @@ uint8_t Encoder_IsIndexDetected(
 
 /*
  * エンコーダ位置をソフトウェア上でリセットする
- *
- * 次回のZ相が新しい絶対基準になる。
  */
 void Encoder_ResetPosition(
     Encoder_HandleTypeDef *encoder)
