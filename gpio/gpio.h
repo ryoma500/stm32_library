@@ -29,4 +29,6 @@
 #define roboB_GPIO_ReadPin(name) \
     HAL_GPIO_ReadPin(name##_GPIO_Port, name##_Pin)
 
+void roboB_gpio_Callback(void (*callback)(uint16_t GPIO_Pin));
+
 #endif
