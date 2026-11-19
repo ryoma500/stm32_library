@@ -118,18 +118,12 @@ void RoboMaster_setFeedbackTimeout(RoboMaster *robomaster, uint32_t timeout);
 void RoboMaster_setTimeout(RoboMaster *robomaster, uint32_t controlTimeout, uint32_t feedbackTimeout);
 void RoboMaster_setCurrentLimit(RoboMaster *robomaster, float minCurrent, float maxCurrent);
 void RoboMaster_setVelocityLimit(RoboMaster *robomaster, float minVelocity, float maxVelocity);
-void RoboMaster_setPositionLimit(RoboMaster *robomaster, float minPosition, float maxPosition);
-void RoboMaster_setTrapezoidAcceleration(RoboMaster *robomaster, float acceleration);
-void RoboMaster_setTrapezoidMaxAcceleration(RoboMaster *robomaster, float acceleration);
-void RoboMaster_setRoundCount(RoboMaster *robomaster, int32_t roundCount);
 void RoboMaster_setRawPositionOffset(RoboMaster *robomaster, int16_t offset);
 void RoboMaster_resetZeroPosition(RoboMaster *robomaster);
 
 void RoboMaster_setTargetCurrent(RoboMaster *robomaster, float current);
 void RoboMaster_setTargetVelocity(RoboMaster *robomaster, float velocity);
 void RoboMaster_setTargetPosition(RoboMaster *robomaster, float position);
-void RoboMaster_setTargetTrapezoid(RoboMaster *robomaster, float position);
-void RoboMaster_setTargetSync(RoboMaster *robomaster, float motorid);
 
 void RoboMaster_calculateOutputCurrent(RoboMaster *robomaster);
 void RoboMaster_transmit(RoboMasters *robomasters);

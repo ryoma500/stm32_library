@@ -17,6 +17,16 @@ static void (*UartRxCallback)(
     uint16_t size
 ) = NULL;
 
+#define MAX_UART_HANDLES 4
+
+typedef struct {
+    UART_HandleTypeDef *huart;
+    uint8_t *rxBuf;
+    uint16_t rxSize;
+} UartRxInfo;
+
+static UartRxInfo rxInfos[MAX_UART_HANDLES] = {0};
+
 
 // UART Interrupt Transmit
 HAL_StatusTypeDef roboB_uart_transmit_IT(
@@ -34,6 +44,16 @@ HAL_StatusTypeDef roboB_uart_receive_IT(
     uint8_t *data,
     uint16_t size
 ) {
+    // Save buffer information for this huart instance
+    for (int i = 0; i < MAX_UART_HANDLES; i++) {
+        if (rxInfos[i].huart == huart || rxInfos[i].huart == NULL) {
+            rxInfos[i].huart = huart;
+            rxInfos[i].rxBuf = data;
+            rxInfos[i].rxSize = size;
+            break;
+        }
+    }
+
     return HAL_UART_Receive_IT(huart, data, size);
 }
 
@@ -68,10 +88,21 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     if (UartRxCallback != NULL) {
+        uint8_t *data = NULL;
+        uint16_t size = 0;
+
+        for (int i = 0; i < MAX_UART_HANDLES; i++) {
+            if (rxInfos[i].huart == huart) {
+                data = rxInfos[i].rxBuf;
+                size = rxInfos[i].rxSize;
+                break;
+            }
+        }
+
         UartRxCallback(
             huart,
-            NULL,
-            0
+            data,
+            size
         );
     }
 

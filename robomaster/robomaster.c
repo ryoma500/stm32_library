@@ -240,7 +240,7 @@ void RoboMaster_setRawPositionOffset(RoboMaster *robomaster, int16_t offset)
 
 void RoboMaster_resetZeroPosition(RoboMaster *robomaster)
 {
-	RoboMaster_setRoundCount(robomaster, 0);
+	robomaster->feedback.roundCount = 0;
 	RoboMaster_setRawPositionOffset(robomaster, robomaster->feedback.rawPosition);
 }
 
