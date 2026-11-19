@@ -14,6 +14,7 @@
  */
 
 #include "robomaster.h"
+#include "timer/timer.h"
 #include <math.h>
 
 #define PI ((float)M_PI)
